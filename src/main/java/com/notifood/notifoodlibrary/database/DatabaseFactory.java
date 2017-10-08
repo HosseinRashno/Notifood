@@ -10,9 +10,6 @@ public class DatabaseFactory {
     public DatabaseClasses getTable(Declaration.enmTables enm){
         DatabaseClasses result= null;
         switch (enm) {
-            case enm_T_SETTINGS:
-                result = new SettingsTBL();
-                break;
             case enm_T_RESTAURANT:
                 result = new RestaurantTBL();
                 break;

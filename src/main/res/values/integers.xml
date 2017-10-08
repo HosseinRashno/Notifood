@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="int_read_timeout">10000</integer>
+    <integer name="int_connect_timeout">10000</integer>
+</resources>
