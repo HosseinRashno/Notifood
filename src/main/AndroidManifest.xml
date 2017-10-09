@@ -13,6 +13,7 @@
                 <action android:name="com.notifood.notifoodlibrary.guidreceiver.saveguid"/>
             </intent-filter>
         </receiver>
+        <receiver android:name=".Receivers.ServiceScheduleReceiver" />
     </application>
 
 </manifest>

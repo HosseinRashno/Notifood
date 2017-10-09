@@ -3,4 +3,6 @@
     <integer name="int_read_timeout">10000</integer>
     <integer name="int_connect_timeout">10000</integer>
     <integer name="int_delay_to_check_apps_answers">15000</integer>
+    <integer name="int_first_service_call_in_seconds">60</integer>
+    <integer name="int_default_service_call_in_hours">1</integer>
 </resources>

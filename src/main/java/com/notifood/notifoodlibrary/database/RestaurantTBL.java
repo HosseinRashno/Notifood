@@ -2,7 +2,6 @@ package com.notifood.notifoodlibrary.database;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.util.Log;
 
 import com.notifood.notifoodlibrary.models.RestaurantModel;
 import com.notifood.notifoodlibrary.models.WorkingHoursModel;
@@ -23,6 +22,7 @@ import static com.notifood.notifoodlibrary.database.DBHelper.TABLE_RESTAURANT;
 import static com.notifood.notifoodlibrary.database.DBHelper.TABLE_WORKING_HOURS;
 import static com.notifood.notifoodlibrary.utils.Declaration.KEY_BEACON_TYPE;
 import static com.notifood.notifoodlibrary.utils.LibPreferences.getIntegerPref;
+import static com.notifood.notifoodlibrary.utils.Utility.NotifoodLog;
 import static com.notifood.notifoodlibrary.utils.Utility.removeIllegalCharacterForSQLite;
 
 /**
@@ -129,7 +129,7 @@ public class RestaurantTBL extends DatabaseClasses {
             if (result)
                 currentDB.setTransactionSuccessful();
         } catch (Exception ex){
-            Log.e(Declaration.TAG, ex.getMessage());
+            NotifoodLog(ex.getMessage());
         } finally {
             currentDB.endTransaction();
         }

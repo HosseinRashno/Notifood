@@ -2,7 +2,6 @@ package com.notifood.notifoodlibrary.services;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -21,6 +20,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.net.ssl.HttpsURLConnection;
+
+import static com.notifood.notifoodlibrary.utils.Utility.NotifoodLog;
 
 
 /**
@@ -100,9 +101,9 @@ public class SettingsAndRestaurantsService extends AsyncTask<String, Integer, Re
                 }
             }
         } catch (MalformedURLException muex){
-            Log.e(Declaration.TAG, muex.getMessage());
+            NotifoodLog(muex.getMessage());
         } catch (Exception ex){
-            Log.e(Declaration.TAG, ex.getMessage());
+            NotifoodLog(ex.getMessage());
         }
         return responseModel;
     }

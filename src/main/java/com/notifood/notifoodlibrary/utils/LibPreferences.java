@@ -67,6 +67,14 @@ public class LibPreferences {
         editor.commit();
     }
 
+    public static void saveCustomBoolObject(String prefKey, Declaration.enmCustomBoolCondition prefValue){
+        SharedPreferences sharedPref = ApplicationClass.getAppContext().getSharedPreferences(SHAREDPREFERENCES_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+
+        editor.putInt(prefKey, prefValue.getCode());
+        editor.commit();
+    }
+
     public static String getStringPref(String prefKey){
         SharedPreferences sharedPreferences = ApplicationClass.getAppContext().getSharedPreferences(SHAREDPREFERENCES_NAME, Context.MODE_PRIVATE);
         String result = sharedPreferences.getString(prefKey, "");
@@ -81,7 +89,13 @@ public class LibPreferences {
 
     public static boolean getBooleanPref(String prefKey){
         SharedPreferences sharedPreferences = ApplicationClass.getAppContext().getSharedPreferences(SHAREDPREFERENCES_NAME, Context.MODE_PRIVATE);
-        boolean result = sharedPreferences.getBoolean(prefKey, true);
+        boolean result = sharedPreferences.getBoolean(prefKey, false);
         return result;
+    }
+
+    public static Declaration.enmCustomBoolCondition getCustomBoolPref(String prefKey){
+        SharedPreferences sharedPreferences = ApplicationClass.getAppContext().getSharedPreferences(SHAREDPREFERENCES_NAME, Context.MODE_PRIVATE);
+        int result = sharedPreferences.getInt(prefKey, Declaration.enmCustomBoolCondition.enm_CBC_DEFAULT.getCode());
+        return Declaration.enmCustomBoolCondition.values()[result];
     }
 }
