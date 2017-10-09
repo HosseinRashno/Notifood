@@ -7,6 +7,12 @@
     <application android:allowBackup="true" android:label="@string/app_name"
         android:supportsRtl="true">
 
+        <receiver android:name=".Receivers.GUIDReceiver">
+            <intent-filter>
+                <action android:name="com.notifood.notifoodlibrary.guidreceiver.notifyme"/>
+                <action android:name="com.notifood.notifoodlibrary.guidreceiver.saveguid"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

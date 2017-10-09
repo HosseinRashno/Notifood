@@ -2,4 +2,5 @@
 <resources>
     <integer name="int_read_timeout">10000</integer>
     <integer name="int_connect_timeout">10000</integer>
+    <integer name="int_delay_to_check_apps_answers">15000</integer>
 </resources>

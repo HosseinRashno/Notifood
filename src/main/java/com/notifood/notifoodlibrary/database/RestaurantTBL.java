@@ -23,6 +23,7 @@ import static com.notifood.notifoodlibrary.database.DBHelper.TABLE_RESTAURANT;
 import static com.notifood.notifoodlibrary.database.DBHelper.TABLE_WORKING_HOURS;
 import static com.notifood.notifoodlibrary.utils.Declaration.KEY_BEACON_TYPE;
 import static com.notifood.notifoodlibrary.utils.LibPreferences.getIntegerPref;
+import static com.notifood.notifoodlibrary.utils.Utility.removeIllegalCharacterForSQLite;
 
 /**
  * Created by mrashno on 10/4/2017.
@@ -101,8 +102,8 @@ public class RestaurantTBL extends DatabaseClasses {
             // Insert restaurants
             for (RestaurantModel restaurant: restaurantModelArray){
                 ContentValues contentValues = new ContentValues();
-                contentValues.put(COL_RESTAURANT_NAME, restaurant.getRestaurantName());
-                contentValues.put(COL_RESTAURANT_ADDRESS, restaurant.getRawAddress());
+                contentValues.put(COL_RESTAURANT_NAME, removeIllegalCharacterForSQLite(restaurant.getRestaurantName()));
+                contentValues.put(COL_RESTAURANT_ADDRESS, removeIllegalCharacterForSQLite(restaurant.getRawAddress()));
                 if (enmBeaconType == Declaration.enmBeaconType.enm_BT_EDDYSTONE){
                     contentValues.put(COL_RESTAURANT_INSTANCE, restaurant.getEddystoneInsnace());
                 } else if (enmBeaconType == Declaration.enmBeaconType.enm_BT_IBEACON){

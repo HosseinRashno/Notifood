@@ -9,6 +9,7 @@ import com.notifood.notifoodlibrary.models.ServiceModel.ResponseModel;
 import com.notifood.notifoodlibrary.models.SettingsObjectModel;
 import com.notifood.notifoodlibrary.services.SettingsAndRestaurantsService;
 import com.notifood.notifoodlibrary.utils.Declaration;
+import com.notifood.notifoodlibrary.utils.GUIDHelper;
 
 import java.util.UUID;
 
@@ -30,34 +31,23 @@ public class Notifood {
     // TODO : You should add enough log in project to developers know what happening
     // TODO : Add enough comment to everyone can easily understand what this library doing
     // TODO : Create test cases
+    // TODO : Check if your content provider work well, and check if user need to add anything to manifest
+    // TODO : Check if content provider need permissions
 
     public void setDevKey(String devKey){
         saveStringObject(KEY_DEV_KEY, devKey);
     }
 
     public void initialize(Context context){
+        // Save application package name
         String packageName = context.getPackageName();
         saveStringObject(KEY_PACKAGE_NAME, packageName);
 
-        // TODO : Get or create GUID
-        String GUID = UUID.randomUUID().toString();
+        // Do checking flow for GUID
+        GUIDHelper guidHelper = new GUIDHelper();
+        guidHelper.checkGUId(context);
 
-        // Get development key
-        String devKey = getStringPref(KEY_DEV_KEY);
-
-
-        // TODO : if we already have the data than Start service for get new update with schedule, Else do this after call the service
-
-        // TODO : After finalize the GUID process, You should call webservice to receive other setting data
-        RequestModel requestModel = new RequestModel();
-        requestModel.setGUID(GUID);
-        requestModel.setPackageName(packageName);
-        requestModel.setDevKey(devKey);
-        SettingsAndRestaurantsService service = new SettingsAndRestaurantsService(requestModel, delegate, context);
-        service.execute();
-
-
-        // TODO : After above step, You should start beacon detection process
+        // TODO : Create a service for first call and then call itself by schedule
     }
 
     private SettingsAndRestaurantsService.ServiceDelegate delegate = new SettingsAndRestaurantsService.ServiceDelegate() {
@@ -82,5 +72,13 @@ public class Notifood {
         saveBooleanObject(KEY_IS_ENABLED, false);
 
         // TODO : Stop beacon detection
+    }
+
+    public void enableDebugMode(){
+        // TODO : If this method called then log everything, Else do not log at all
+    }
+
+    public void disableDebugMode(){
+        // TODO : If this method called then do not log at all, Else log everything
     }
 }
