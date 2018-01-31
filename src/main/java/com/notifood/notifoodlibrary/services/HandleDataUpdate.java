@@ -14,6 +14,7 @@ import android.os.Process;
 import android.os.SystemClock;
 
 import com.notifood.notifoodlibrary.ApplicationClass;
+import com.notifood.notifoodlibrary.R;
 import com.notifood.notifoodlibrary.models.SettingModel;
 import com.notifood.notifoodlibrary.utils.Declaration;
 import com.notifood.notifoodlibrary.utils.HandleServiceCall;
@@ -43,7 +44,7 @@ public class HandleDataUpdate extends Service {
         HandleServiceCall.updateDelegate delegate = new HandleServiceCall.updateDelegate() {
             @Override
             public void updateCompletionResult() {
-                long wakeUpMillis = 60 * 1000;
+                long wakeUpMillis = getResources().getInteger(R.integer.int_default_service_call_in_hours) * 60 * 60 * 1000;
                 SettingModel settingModel = LibPreferences.getSerializable(Declaration.KEY_SETTINGS, SettingModel.class);
                 if (settingModel!=null){
                     wakeUpMillis = settingModel.getUpdatePeriod() * 60 * 60 * 1000;
@@ -56,6 +57,7 @@ public class HandleDataUpdate extends Service {
                         SystemClock.elapsedRealtime() +
                                 wakeUpMillis, alarmIntent);
 
+                ((ApplicationClass)getApplication()).initializeBeaconDetection();
                 stopSelf(msg.arg1);
             }
         };

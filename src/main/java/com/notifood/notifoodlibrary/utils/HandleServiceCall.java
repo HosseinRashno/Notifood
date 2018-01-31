@@ -122,10 +122,9 @@ public class HandleServiceCall {
                             }
                             // endregion
 
+
+
                             LibPreferences.saveSerializable(Declaration.KEY_SETTINGS, response.getSetting());
-
-                            // TODO : Initialize services and other things from settings
-
                         }
 
                         if (response.getRestaurants().size()>0 ){

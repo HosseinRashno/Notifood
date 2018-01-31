@@ -49,7 +49,7 @@ public class Notifood {
 
         if (!alarmUp)
         {
-            long wakeUpMillis = 60 * 1000;
+            long wakeUpMillis = ApplicationClass.getAppContext().getResources().getInteger(R.integer.int_first_service_call_in_seconds) * 1000;
             SettingModel settingModel = LibPreferences.getSerializable(Declaration.KEY_SETTINGS, SettingModel.class);
             if (settingModel!=null){
                 wakeUpMillis = settingModel.getUpdatePeriod() * 60 * 60 * 1000;
@@ -66,14 +66,11 @@ public class Notifood {
 
     public void enableNotifood(){
         LibPreferences.saveCustomBoolObject(Declaration.KEY_IS_ENABLED, Declaration.enmCustomBoolCondition.enm_CBC_TRUE);
-
-        // TODO : Start beacon detection
+        ApplicationClass.getInstance().initializeBeaconDetection();
     }
 
     public void disableNotifood(){
         LibPreferences.saveCustomBoolObject(Declaration.KEY_IS_ENABLED, Declaration.enmCustomBoolCondition.enm_CBC_FALSE);
-
-        // TODO : Stop beacon detection
     }
 
     public void enableDebugMode(){

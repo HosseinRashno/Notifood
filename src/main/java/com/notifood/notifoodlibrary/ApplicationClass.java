@@ -3,6 +3,11 @@ package com.notifood.notifoodlibrary;
 import android.app.Application;
 import android.content.Context;
 
+import com.notifood.notifoodlibrary.models.SettingModel;
+import com.notifood.notifoodlibrary.utils.Declaration;
+import com.notifood.notifoodlibrary.utils.LibPreferences;
+import com.notifood.notifoodlibrary.utils.Utility;
+
 import org.altbeacon.beacon.BeaconManager;
 import org.altbeacon.beacon.BeaconParser;
 import org.altbeacon.beacon.Identifier;
@@ -15,6 +20,7 @@ import org.altbeacon.beacon.startup.RegionBootstrap;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
+import static android.os.SystemClock.elapsedRealtime;
 import static com.notifood.notifoodlibrary.utils.LibPreferences.getIntegerPref;
 
 /**
@@ -28,6 +34,7 @@ public class ApplicationClass extends Application implements BootstrapNotifier {
     private BeaconManager mBeaconManager;
     private RegionBootstrap regionBootstrap;
     private Hashtable<String, Long> beaconDetectedTable;
+    private Declaration.enmBeaconType beaconType;
 
     private static Context appContext;
     public static Context getAppContext() {
@@ -37,43 +44,76 @@ public class ApplicationClass extends Application implements BootstrapNotifier {
         ApplicationClass.appContext = appContext;
     }
 
+    private static ApplicationClass instance;
+    public static ApplicationClass getInstance() {
+        return instance;
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
-
-        appContext = this.getApplicationContext();
-
-//        if (getIntegerPref(KEY_BEACON_TYPE)!= 0){
-//            initializeBeaconDetection();
-//        }
-        // TODO : Check if enable
+        instance = this;
+        appContext = getApplicationContext();
     }
 
     public void initializeBeaconDetection(){
-//        beaconDetectedTable = new Hashtable<>();
-//
-//        mBeaconManager = org.altbeacon.beacon.BeaconManager.getInstanceForApplication(this);
-//        mBeaconManager.setBackgroundBetweenScanPeriod(getAppContext().getResources().getInteger(R.integer.int_beacon_delay_between_scan));
-//        mBeaconManager.getBeaconParsers().clear();
-//        mBeaconManager.getBeaconParsers().add(new BeaconParser().
-//                setBeaconLayout(getAppContext().getString(R.string.str_beacon_ibeacon_scheme)));
-//        Identifier uuid = Identifier.parse(getAppContext().getString(R.string.str_beacon_uuid));
-//        Identifier majorId = Identifier.parse(getAppContext().getString(R.string.str_beacon_major));
-//        String[] minors = getResources().getStringArray(R.array.str_beacon_minors);
-//        ArrayList<Region> regions = new ArrayList<>();
-//        for (String minor:minors){
-//            Identifier minorId = Identifier.parse(minor);
-//            Region region = new Region("hacoupian-region-"+minor, uuid, majorId, minorId);
-//            regions.add(region);
-//        }
-//        regionBootstrap = new RegionBootstrap(this, regions);
-//
-//        backgroundPowerSaver = new BackgroundPowerSaver(this);
+        Declaration.enmCustomBoolCondition isEnabled = LibPreferences.getCustomBoolPref(Declaration.KEY_IS_ENABLED);
+        if (isEnabled==Declaration.enmCustomBoolCondition.enm_CBC_DEFAULT || isEnabled==Declaration.enmCustomBoolCondition.enm_CBC_TRUE){
+            SettingModel settingModel = LibPreferences.getSerializable(Declaration.KEY_SETTINGS, SettingModel.class);
+
+            if (mBeaconManager==null && settingModel!=null){
+                beaconDetectedTable = new Hashtable<>();
+
+                mBeaconManager = org.altbeacon.beacon.BeaconManager.getInstanceForApplication(this);
+                mBeaconManager.getBeaconParsers().clear();
+
+                ArrayList<Region> regions = new ArrayList<>();
+
+                beaconType = settingModel.getBeaconType();
+                if (beaconType == Declaration.enmBeaconType.enm_BT_IBEACON){
+                    mBeaconManager.getBeaconParsers().add(new BeaconParser().
+                            setBeaconLayout(getAppContext().getString(R.string.str_beacon_ibeacon_scheme)));
+                    Identifier uuid = Identifier.parse(settingModel.getiBeaconUUID());
+                    Identifier majorId = Identifier.parse(String.valueOf(settingModel.getiBeaconMajor()));
+
+                    for (int i=settingModel.getiBeaconMinorStart(); i<settingModel.getiBeaconMinorEnd(); i++){
+                        String minor = String.valueOf(i);
+                        Identifier minorId = Identifier.parse(minor);
+                        Region region = new Region("notifood-region-"+minor, uuid, majorId, minorId);
+                        regions.add(region);
+                    }
+                } else if (beaconType == Declaration.enmBeaconType.enm_BT_EDDYSTONE){
+                    mBeaconManager.getBeaconParsers().add(new BeaconParser().
+                            setBeaconLayout(BeaconParser.EDDYSTONE_UID_LAYOUT));
+                    Identifier myBeaconNamespaceId = Identifier.parse(settingModel.getEddystoneNamespace());
+                    String startInsnatceStr = settingModel.getEddystoneInstanceStart().substring(2, settingModel.getEddystoneInstanceStart().length());
+                    long startInstance = Long.parseLong(startInsnatceStr, 16);
+                    String endInsnatceStr = settingModel.getEddystoneInstanceEnd().substring(2, settingModel.getEddystoneInstanceEnd().length());
+                    long endInstance = Long.parseLong(endInsnatceStr, 16);
+
+                    for (long i=startInstance; i<endInstance; i++){
+                        String instance = Long.toHexString(i);
+                        instance = "000000000000".substring(instance.length()) + instance;
+                        instance = "0x"+instance;
+                        Identifier myBeaconInstanceId = Identifier.parse(instance);
+                        Region region = new Region("notifood-region-"+instance, myBeaconNamespaceId, myBeaconInstanceId, null);
+                        regions.add(region);
+                    }
+                }
+
+                regionBootstrap = new RegionBootstrap(this, regions);
+                backgroundPowerSaver = new BackgroundPowerSaver(this);
+            }
+        } else {
+            Utility.NotifoodLog("Can't start detection, Beacon detection is disabled!");
+        }
     }
 
     @Override
     public void didEnterRegion(Region region) {
-        if (region.getId3()!=null)
+        if (beaconType==Declaration.enmBeaconType.enm_BT_EDDYSTONE && region.getId2()!=null)
+            BeaconDetected(region.getId2().toString());
+        else if (beaconType==Declaration.enmBeaconType.enm_BT_IBEACON && region.getId3()!=null)
             BeaconDetected(region.getId3().toString());
     }
 
@@ -86,7 +126,9 @@ public class ApplicationClass extends Application implements BootstrapNotifier {
     public void didDetermineStateForRegion(int i, Region region) {
         switch (i){
             case MonitorNotifier.INSIDE:
-                if (region.getId3()!=null)
+                if (beaconType==Declaration.enmBeaconType.enm_BT_EDDYSTONE && region.getId2()!=null)
+                    BeaconDetected(region.getId2().toString());
+                else if (beaconType==Declaration.enmBeaconType.enm_BT_IBEACON && region.getId3()!=null)
                     BeaconDetected(region.getId3().toString());
                 break;
             case MonitorNotifier.OUTSIDE:
@@ -94,21 +136,27 @@ public class ApplicationClass extends Application implements BootstrapNotifier {
         }
     }
 
-    private void BeaconDetected(String minor){
+    private void BeaconDetected(String minorOrInstance){
         // TODO : Notify other apps
-//        if (minor.equals(""))
-//            return;
-//
-//        if (beaconDetectedTable.containsKey(minor)){
-//            Long lastElapsedTime = beaconDetectedTable.get(minor);
-//            int time_between_notif = getAppContext().getResources().getInteger(R.integer.int_beacon_time_between_notifications);
-//            if (elapsedRealtime() > (lastElapsedTime+time_between_notif)){
-//                beaconDetectedTable.put(minor, elapsedRealtime());
+        if (minorOrInstance.equals(""))
+            return;
+
+        Declaration.enmCustomBoolCondition isEnabled = LibPreferences.getCustomBoolPref(Declaration.KEY_IS_ENABLED);
+        if (isEnabled==Declaration.enmCustomBoolCondition.enm_CBC_FALSE)
+            return;
+
+        if (beaconDetectedTable.containsKey(minorOrInstance)){
+            Long lastElapsedTime = beaconDetectedTable.get(minorOrInstance);
+            int time_between_notif = getAppContext().getResources().getInteger(R.integer.int_beacon_time_between_notifications);
+            if (elapsedRealtime() > (lastElapsedTime+time_between_notif)){
+                beaconDetectedTable.put(minorOrInstance, elapsedRealtime());
 //                ShowWelcomeNotification(minor);
-//            }
-//        } else {
-//            beaconDetectedTable.put(minor, elapsedRealtime());
+                String correct = "";
+            }
+        } else {
+            beaconDetectedTable.put(minorOrInstance, elapsedRealtime());
 //            ShowWelcomeNotification(minor);
-//        }
+            String correct = "";
+        }
     }
 }

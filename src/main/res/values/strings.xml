@@ -1,4 +1,6 @@
 <resources>
+    <string name="str_beacon_ibeacon_scheme">m:0-3=4c000215,i:4-19,i:20-21,i:22-23,p:24-24</string>
+
     <string name="app_name">Notifood Library</string>
     <string name="app_folder_name">/.notifood</string>
     <string name="app_person_id_file">.person</string>
