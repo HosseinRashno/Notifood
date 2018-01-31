@@ -14,8 +14,6 @@ public class ResponseModel {
     @SerializedName("setting")
     private SettingModel setting;
     public SettingModel getSetting() {
-        if (setting==null)
-            setting = new SettingModel();
         return setting;
     }
     public void setSetting(SettingModel setting) {
@@ -31,5 +29,14 @@ public class ResponseModel {
     }
     public void setRestaurants(ArrayList<RestaurantModel> restaurants) {
         this.restaurants = restaurants;
+    }
+
+    @SerializedName("errorCode")
+    private Integer errorCode;
+    public Integer getErrorCode() {
+        return errorCode;
+    }
+    public void setErrorCode(Integer errorCode) {
+        this.errorCode = errorCode;
     }
 }

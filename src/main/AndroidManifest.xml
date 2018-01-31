@@ -2,18 +2,18 @@
     package="com.notifood.notifoodlibrary"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <uses-sdk tools:overrideLibrary="org.altbeacon.beacon"/>
 
-    <application android:allowBackup="true" android:label="@string/app_name"
+    <application
+        android:name=".ApplicationClass"
+        android:allowBackup="true"
+        android:label="@string/app_name"
         android:supportsRtl="true">
 
-        <receiver android:name=".Receivers.GUIDReceiver">
-            <intent-filter>
-                <action android:name="com.notifood.notifoodlibrary.guidreceiver.notifyme"/>
-                <action android:name="com.notifood.notifoodlibrary.guidreceiver.saveguid"/>
-            </intent-filter>
-        </receiver>
-        <receiver android:name=".Receivers.ServiceScheduleReceiver" />
+        <service android:name=".services.HandleDataUpdate"></service>
     </application>
 
 </manifest>

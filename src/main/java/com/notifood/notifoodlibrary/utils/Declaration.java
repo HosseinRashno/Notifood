@@ -9,20 +9,12 @@ public class Declaration {
     public static final String SHAREDPREFERENCES_NAME = "notifood_settings";
 
     // region shared preferences keys
-    public static final String KEY_BEACON_TYPE = "beaconType";
-    public static final String KEY_EDDYSTONE_NAMESPACE = "eddystoneNamespace";
-    public static final String KEY_EDDYSTONE_INSTANCE_ID_START = "eddystoneInstanceIdStart";
-    public static final String KEY_EDDYSTONE_INSTANCE_ID_END = "eddystoneInstanceIdEnd";
-    public static final String KEY_IBEACON_UUID = "ibeaconUUID";
-    public static final String KEY_IBEACON_MAJOR = "ibeaconMajor";
-    public static final String KEY_IBEACON_MINOR_START = "ibeaconMinorStart";
-    public static final String KEY_IBEACON_MINOR_END = "ibeaconMinorEnd";
+    public static final String KEY_SETTINGS = "settingsKey";
     public static final String KEY_IS_ENABLED = "isEnabled";
     public static final String KEY_IS_DEBUG_ENABLED = "isDebugEnabled";
     public static final String KEY_PACKAGE_NAME = "packageName";
     public static final String KEY_GUID = "GUID";
     public static final String KEY_DEV_KEY = "devKey";
-    public static final String KEY_UPDATE_PERIOD = "updatePeriod";
     // endregion
 
     public enum enmBeaconType {
@@ -66,6 +58,19 @@ public class Declaration {
         private int code;
 
         enmCustomBoolCondition(int code) {
+            this.code = code;
+        }
+
+        public int getCode() {
+            return code;
+        }
+    }
+
+    public enum enmShamsiDays {
+        enmDef(0), enmShanbe(1), enm1Shanbe(2), enm2Shanbe(3), enm3Shanbe(4), enm4Shanbe(5), enm5Shanbe(6), enmJome(7), enmHolidays(8), enmAllDays(9);
+        private int code;
+
+        enmShamsiDays(int code) {
             this.code = code;
         }
 

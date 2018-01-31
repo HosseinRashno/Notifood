@@ -3,18 +3,13 @@ package com.notifood.notifoodlibrary.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.notifood.notifoodlibrary.ApplicationClass;
 import com.notifood.notifoodlibrary.models.SettingModel;
 
-import static com.notifood.notifoodlibrary.utils.Declaration.KEY_BEACON_TYPE;
-import static com.notifood.notifoodlibrary.utils.Declaration.KEY_EDDYSTONE_INSTANCE_ID_END;
-import static com.notifood.notifoodlibrary.utils.Declaration.KEY_EDDYSTONE_INSTANCE_ID_START;
-import static com.notifood.notifoodlibrary.utils.Declaration.KEY_EDDYSTONE_NAMESPACE;
-import static com.notifood.notifoodlibrary.utils.Declaration.KEY_IBEACON_MAJOR;
-import static com.notifood.notifoodlibrary.utils.Declaration.KEY_IBEACON_MINOR_END;
-import static com.notifood.notifoodlibrary.utils.Declaration.KEY_IBEACON_MINOR_START;
-import static com.notifood.notifoodlibrary.utils.Declaration.KEY_IBEACON_UUID;
-import static com.notifood.notifoodlibrary.utils.Declaration.KEY_UPDATE_PERIOD;
+import java.lang.reflect.Type;
+
 import static com.notifood.notifoodlibrary.utils.Declaration.SHAREDPREFERENCES_NAME;
 
 /**
@@ -22,27 +17,6 @@ import static com.notifood.notifoodlibrary.utils.Declaration.SHAREDPREFERENCES_N
  */
 
 public class LibPreferences {
-
-    public static void saveSettingObject(SettingModel settingModel){
-        SharedPreferences sharedPref = ApplicationClass.getAppContext().getSharedPreferences(SHAREDPREFERENCES_NAME, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-
-        editor.putInt(KEY_BEACON_TYPE, settingModel.getBeaconType().getCode());
-        editor.putInt(KEY_UPDATE_PERIOD, settingModel.getUpdatePeriod());
-        if (settingModel.getBeaconType() == Declaration.enmBeaconType.enm_BT_EDDYSTONE){
-            editor.putString(KEY_EDDYSTONE_NAMESPACE, settingModel.getEddystoneNamespace());
-            editor.putString(KEY_EDDYSTONE_INSTANCE_ID_START, settingModel.getEddystoneInstanceStart());
-            editor.putString(KEY_EDDYSTONE_INSTANCE_ID_END, settingModel.getEddystoneInstanceEnd());
-        } else if (settingModel.getBeaconType() == Declaration.enmBeaconType.enm_BT_IBEACON){
-            editor.putString(KEY_IBEACON_UUID, settingModel.getiBeaconUUID());
-            editor.putInt(KEY_IBEACON_MAJOR, settingModel.getiBeaconMajor());
-            editor.putInt(KEY_IBEACON_MINOR_START, settingModel.getiBeaconMinorStart());
-            editor.putInt(KEY_IBEACON_MINOR_END, settingModel.getiBeaconMinorEnd());
-        }
-
-        editor.commit();
-    }
-
     public static void saveStringObject(String prefKey, String prefValue){
         SharedPreferences sharedPref = ApplicationClass.getAppContext().getSharedPreferences(SHAREDPREFERENCES_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
@@ -75,6 +49,14 @@ public class LibPreferences {
         editor.commit();
     }
 
+    public static void saveSerializable(String key, Object value){
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        Gson gson = gsonBuilder.create();
+        String data = gson.toJson(value);
+
+        saveStringObject(key, data);
+    }
+
     public static String getStringPref(String prefKey){
         SharedPreferences sharedPreferences = ApplicationClass.getAppContext().getSharedPreferences(SHAREDPREFERENCES_NAME, Context.MODE_PRIVATE);
         String result = sharedPreferences.getString(prefKey, "");
@@ -91,6 +73,31 @@ public class LibPreferences {
         SharedPreferences sharedPreferences = ApplicationClass.getAppContext().getSharedPreferences(SHAREDPREFERENCES_NAME, Context.MODE_PRIVATE);
         boolean result = sharedPreferences.getBoolean(prefKey, false);
         return result;
+    }
+
+    public static <T> T getSerializable(String key, Class<T> classOfT){
+        return getSerializable(key, classOfT, null);
+    }
+
+    public static  <T> T getSerializable(String key, Type typeOfT){
+        return getSerializable(key, null, typeOfT);
+    }
+
+    private static  <T> T getSerializable(String key, Class<T> classOfT, Type typeOfT){
+        SharedPreferences sharedPref = ApplicationClass.getAppContext().getSharedPreferences(SHAREDPREFERENCES_NAME, Context.MODE_PRIVATE);
+        if (sharedPref.contains(key)){
+            String json = sharedPref.getString(key, "");
+
+            GsonBuilder gsonBuilder = new GsonBuilder();
+            Gson gson = gsonBuilder.create();
+
+            if (classOfT!=null)
+                return gson.fromJson(json, classOfT);
+            else
+                return gson.fromJson(json, typeOfT);
+        } else {
+            return null;
+        }
     }
 
     public static Declaration.enmCustomBoolCondition getCustomBoolPref(String prefKey){

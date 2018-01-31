@@ -3,21 +3,27 @@ package com.notifood.notifoodlibrary.models;
 import com.google.gson.annotations.SerializedName;
 import com.notifood.notifoodlibrary.utils.Declaration;
 
+import java.io.Serializable;
+
 /**
  * Created by mrashno on 10/4/2017.
  */
 
-public class SettingModel {
-    @SerializedName("type")
-    private Declaration.enmBeaconType beaconType;
+public class SettingModel implements Serializable {
+    @SerializedName("Type")
+    private int beaconType;
     public Declaration.enmBeaconType getBeaconType() {
-        return beaconType;
+        for (Declaration.enmBeaconType enm:Declaration.enmBeaconType.values()){
+            if (enm.getCode()==beaconType)
+                return enm;
+        }
+        return null;
     }
-    public void setBeaconType(Declaration.enmBeaconType beaconType) {
-        this.beaconType = beaconType;
+    public void setBeaconType(Declaration.enmBeaconType beaconTypeEnm) {
+        this.beaconType = beaconTypeEnm.getCode();
     }
 
-    @SerializedName("namesapce")
+    @SerializedName("EdyNamesapce")
     private String eddystoneNamespace;
     public String getEddystoneNamespace() {
         return eddystoneNamespace;
@@ -26,7 +32,7 @@ public class SettingModel {
         this.eddystoneNamespace = eddystoneNamespace;
     }
 
-    @SerializedName("instanceStart")
+    @SerializedName("EdyInstantStart")
     private String eddystoneInstanceStart;
     public String getEddystoneInstanceStart() {
         return eddystoneInstanceStart;
@@ -35,7 +41,7 @@ public class SettingModel {
         this.eddystoneInstanceStart = eddystoneInstanceStart;
     }
 
-    @SerializedName("instanceEnd")
+    @SerializedName("EdyInstantEnd")
     private String eddystoneInstanceEnd;
     public String getEddystoneInstanceEnd() {
         return eddystoneInstanceEnd;
@@ -44,7 +50,7 @@ public class SettingModel {
         this.eddystoneInstanceEnd = eddystoneInstanceEnd;
     }
 
-    @SerializedName("uuid")
+    @SerializedName("UId")
     private String iBeaconUUID;
 
     public String getiBeaconUUID() {
@@ -55,7 +61,7 @@ public class SettingModel {
         this.iBeaconUUID = iBeaconUUID;
     }
 
-    @SerializedName("major")
+    @SerializedName("IMajor")
     private int iBeaconMajor;
     public int getiBeaconMajor() {
         return iBeaconMajor;
@@ -64,7 +70,7 @@ public class SettingModel {
         this.iBeaconMajor = iBeaconMajor;
     }
 
-    @SerializedName("minorStart")
+    @SerializedName("IminorStart")
     private int iBeaconMinorStart;
     public int getiBeaconMinorStart() {
         return iBeaconMinorStart;
@@ -73,7 +79,7 @@ public class SettingModel {
         this.iBeaconMinorStart = iBeaconMinorStart;
     }
 
-    @SerializedName("minorEnd")
+    @SerializedName("IminorEnd")
     private int iBeaconMinorEnd;
     public int getiBeaconMinorEnd() {
         return iBeaconMinorEnd;
@@ -82,12 +88,21 @@ public class SettingModel {
         this.iBeaconMinorEnd = iBeaconMinorEnd;
     }
 
-    @SerializedName("updatePeriod")
+    @SerializedName("DataUpdatePeriod")
     private int updatePeriod;
     public int getUpdatePeriod() {
         return updatePeriod;
     }
     public void setUpdatePeriod(int updatePeriod) {
         this.updatePeriod = updatePeriod;
+    }
+
+    @SerializedName("PersonID")
+    private String personId;
+    public String getPersonId() {
+        return personId;
+    }
+    public void setPersonId(String personId) {
+        this.personId = personId;
     }
 }

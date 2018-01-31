@@ -7,30 +7,30 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class RequestModel {
-    @SerializedName("guid")
-    private String GUID;
-    public String getGUID() {
-        return GUID;
+    @SerializedName("personId")
+    private String personId;
+    public String getPersonId() {
+        return personId;
     }
-    public void setGUID(String GUID) {
-        this.GUID = GUID;
+    public void setPersonId(String personId) {
+        this.personId = personId;
     }
 
     @SerializedName("packageName")
-    private String PackageName;
+    private String packageName;
     public String getPackageName() {
-        return PackageName;
+        return packageName;
     }
     public void setPackageName(String packageName) {
-        PackageName = packageName;
+        this.packageName = packageName;
     }
 
-    @SerializedName("devKey")
-    private String DevKey;
-    public String getDevKey() {
-        return DevKey;
+    @SerializedName("DeveloperKey")
+    private String DeveloperKey;
+    public String getDeveloperKey() {
+        return DeveloperKey;
     }
-    public void setDevKey(String devKey) {
-        DevKey = devKey;
+    public void setDeveloperKey(String developerKey) {
+        DeveloperKey = developerKey;
     }
 }

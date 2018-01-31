@@ -96,14 +96,16 @@ public class SettingsAndRestaurantsService extends AsyncTask<String, Integer, Re
                     }
                     responseModel = gson.fromJson(responseJson, ResponseModel.class);
 
+                } catch(Exception ex){
+                    NotifoodLog(ex.toString());
                 } finally {
                     urlConnection.disconnect();
                 }
             }
         } catch (MalformedURLException muex){
-            NotifoodLog(muex.getMessage());
+            NotifoodLog(muex.toString());
         } catch (Exception ex){
-            NotifoodLog(ex.getMessage());
+            NotifoodLog(ex.toString());
         }
         return responseModel;
     }

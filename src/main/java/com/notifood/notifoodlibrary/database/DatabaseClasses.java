@@ -32,9 +32,4 @@ public abstract class DatabaseClasses {
     protected void CloseConnection(){
         currentDB.close();
     }
-
-    abstract public ArrayList<Object> SelectAll();
-    abstract public Object SelectById(int id);
-    abstract public boolean InsertToTable(Object object);
-    abstract public boolean DeleteById(int id);
 }
