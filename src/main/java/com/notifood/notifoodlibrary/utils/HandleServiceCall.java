@@ -2,6 +2,7 @@ package com.notifood.notifoodlibrary.utils;
 
 import android.Manifest;
 import android.os.Environment;
+import android.util.Log;
 
 import com.notifood.notifoodlibrary.ApplicationClass;
 import com.notifood.notifoodlibrary.R;
@@ -80,7 +81,7 @@ public class HandleServiceCall {
                 String logPerson = "";
                 if (personId!=null)
                     logPerson = personId.toString();
-                Utility.NotifoodLog(String.format("call service:%s|%s|%s", packageName, devKey, logPerson));
+                Utility.NotifoodLog(String.format("call service:%s|%s|%s", packageName, devKey, logPerson), Log.INFO);
 
                 RequestModel requestModel = new RequestModel();
                 requestModel.setPackageName(packageName);
@@ -122,7 +123,16 @@ public class HandleServiceCall {
                             }
                             // endregion
 
-
+                            // TODO : These lines is for test, remove them
+                            response.getSetting().setBeaconType(Declaration.enmBeaconType.enm_BT_EDDYSTONE);
+                            response.getSetting().setEddystoneNamespace("0xa9863520a9f21a52a2ff");
+                            response.getSetting().setEddystoneInstanceStart("0x0000000000f0");
+                            response.getSetting().setEddystoneInstanceEnd("0x000000000500");
+//                            response.getSetting().setBeaconType(Declaration.enmBeaconType.enm_BT_IBEACON);
+//                            response.getSetting().setiBeaconUUID("c48c6716-193f-477b-b73a-c550ce582a22");
+//                            response.getSetting().setiBeaconMajor(998);
+//                            response.getSetting().setiBeaconMinorStart(1370);
+//                            response.getSetting().setiBeaconMinorEnd(1410);
 
                             LibPreferences.saveSerializable(Declaration.KEY_SETTINGS, response.getSetting());
                         }

@@ -5,4 +5,5 @@
     <integer name="int_first_service_call_in_seconds">60</integer>
     <integer name="int_default_service_call_in_hours">5</integer>
     <integer name="int_beacon_time_between_notifications">300000</integer>
+    <integer name="int_random_delay_to_show_message">10000</integer>
 </resources>

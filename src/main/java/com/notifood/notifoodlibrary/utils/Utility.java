@@ -1,7 +1,10 @@
 package com.notifood.notifoodlibrary.utils;
 
+import android.content.pm.PackageManager;
 import android.database.DatabaseUtils;
 import android.util.Log;
+
+import com.notifood.notifoodlibrary.ApplicationClass;
 
 import java.util.Calendar;
 
@@ -23,9 +26,29 @@ public class Utility {
     }
 
     public static void NotifoodLog(String message){
+        NotifoodLog(message, Log.ERROR);
+    }
+
+    public static void NotifoodLog(String message, int priority){
         Declaration.enmCustomBoolCondition isDebugModeEnabled = getCustomBoolPref(KEY_IS_DEBUG_ENABLED);
         if (isDebugModeEnabled== Declaration.enmCustomBoolCondition.enm_CBC_DEFAULT || isDebugModeEnabled== Declaration.enmCustomBoolCondition.enm_CBC_TRUE){
-            Log.e(Declaration.TAG, message);
+            switch (priority){
+                case Log.VERBOSE:
+                    Log.v(Declaration.TAG, message);
+                    break;
+                case Log.DEBUG:
+                    Log.d(Declaration.TAG, message);
+                    break;
+                case Log.INFO:
+                    Log.i(Declaration.TAG, message);
+                    break;
+                case Log.WARN:
+                    Log.w(Declaration.TAG, message);
+                    break;
+                case Log.ERROR:
+                    Log.e(Declaration.TAG, message);
+                    break;
+            }
         }
     }
 
@@ -58,5 +81,11 @@ public class Utility {
         }
 
         return enm;
+    }
+
+    public static boolean checkPermission(String permission)
+    {
+        int res = ApplicationClass.getAppContext().checkCallingOrSelfPermission(permission);
+        return (res == PackageManager.PERMISSION_GRANTED);
     }
 }

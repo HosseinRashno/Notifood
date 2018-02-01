@@ -4,4 +4,11 @@
     <string name="app_name">Notifood Library</string>
     <string name="app_folder_name">/.notifood</string>
     <string name="app_person_id_file">.person</string>
+
+    <!--
+        First parameter:    instance or minor of detected beacon
+        Second parameter:   Time of the day in minutes minus 3
+        Third parameter:    Time of the day in minutes plus 3
+    -->
+    <string name="detected_beacon_file_format">.%s_lr%shr%s</string>
 </resources>

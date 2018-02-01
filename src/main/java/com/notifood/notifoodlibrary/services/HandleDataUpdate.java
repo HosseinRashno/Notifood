@@ -1,10 +1,12 @@
 package com.notifood.notifoodlibrary.services;
 
+import android.Manifest;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
@@ -12,6 +14,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.os.Process;
 import android.os.SystemClock;
+import android.util.Log;
 
 import com.notifood.notifoodlibrary.ApplicationClass;
 import com.notifood.notifoodlibrary.R;
@@ -19,6 +22,9 @@ import com.notifood.notifoodlibrary.models.SettingModel;
 import com.notifood.notifoodlibrary.utils.Declaration;
 import com.notifood.notifoodlibrary.utils.HandleServiceCall;
 import com.notifood.notifoodlibrary.utils.LibPreferences;
+import com.notifood.notifoodlibrary.utils.Utility;
+
+import java.io.File;
 
 /**
  * Created by mrashno on 1/31/2018.
@@ -56,6 +62,26 @@ public class HandleDataUpdate extends Service {
                 alarmMgr.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
                         SystemClock.elapsedRealtime() +
                                 wakeUpMillis, alarmIntent);
+
+                // Delete all files related to detected beacon
+                try{
+                    if (Utility.checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)){
+                        String directoryPath = Environment.getExternalStorageDirectory() + ApplicationClass.getAppContext().getString(R.string.app_folder_name);
+                        File folder = new File(directoryPath);
+                        File[] files = folder.listFiles();
+
+                        String personFileName = getString(R.string.app_person_id_file);
+
+                        for (File file: files){
+                            if (file.getName().equals(personFileName)==false){
+                                file.delete();
+                            }
+                        }
+                        Utility.NotifoodLog("Directory cleaned successfully.", Log.INFO);
+                    }
+                } catch (Exception ex){
+                    Utility.NotifoodLog("Can't delete some beacon files, reason:"+ex.toString());
+                }
 
                 ((ApplicationClass)getApplication()).initializeBeaconDetection();
                 stopSelf(msg.arg1);
