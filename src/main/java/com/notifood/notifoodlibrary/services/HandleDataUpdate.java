@@ -25,6 +25,7 @@ import com.notifood.notifoodlibrary.utils.LibPreferences;
 import com.notifood.notifoodlibrary.utils.Utility;
 
 import java.io.File;
+import java.util.Locale;
 
 /**
  * Created by mrashno on 1/31/2018.
@@ -42,6 +43,8 @@ public class HandleDataUpdate extends Service {
         @Override
         public void handleMessage(Message msg) {
             this.msg = msg;
+
+            Utility.NotifoodLog("Service is in handleMessage method", Log.DEBUG);
 
             HandleServiceCall handleServiceCall = new HandleServiceCall();
             handleServiceCall.GetNewValues(delegate);
@@ -62,6 +65,8 @@ public class HandleDataUpdate extends Service {
                 alarmMgr.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
                         SystemClock.elapsedRealtime() +
                                 wakeUpMillis, alarmIntent);
+
+                Utility.NotifoodLog(String.format(Locale.US, "Alarm set for %d millis later", wakeUpMillis), Log.DEBUG);
 
                 // Delete all files related to detected beacon
                 try{
@@ -94,6 +99,9 @@ public class HandleDataUpdate extends Service {
         if (android.os.Debug.isDebuggerConnected()) {
             android.os.Debug.waitForDebugger();
         }
+
+        Utility.NotifoodLog("Update service is running!", Log.DEBUG);
+
         HandlerThread thread = new HandlerThread("ServiceStartArguments",
                 Process.THREAD_PRIORITY_BACKGROUND);
         thread.start();

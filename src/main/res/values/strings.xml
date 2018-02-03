@@ -11,4 +11,10 @@
         Third parameter:    Time of the day in minutes plus 3
     -->
     <string name="detected_beacon_file_format">.%s_lr%shr%s</string>
+
+    <string name="notification_channel">Notifood</string>
+
+    <string name="restaurant_welcome_message_title">%s در چند قدمی شماست</string>
+    <string name="restaurant_welcome_message_body">برای مشاهده منوی %s کلیک کنید!</string>
+    <string name="restaurant_welcome_message_subtext">آدرس: %s</string>
 </resources>

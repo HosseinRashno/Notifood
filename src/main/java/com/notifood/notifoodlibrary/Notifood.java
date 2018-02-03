@@ -1,10 +1,15 @@
 package com.notifood.notifoodlibrary;
 
 import android.app.AlarmManager;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.os.SystemClock;
+import android.util.Log;
 
 import com.notifood.notifoodlibrary.models.SettingModel;
 import com.notifood.notifoodlibrary.services.HandleDataUpdate;
@@ -13,26 +18,28 @@ import com.notifood.notifoodlibrary.utils.HandleServiceCall;
 import com.notifood.notifoodlibrary.utils.LibPreferences;
 import com.notifood.notifoodlibrary.utils.Utility;
 
+import java.util.Locale;
+
+import static android.content.Context.NOTIFICATION_SERVICE;
+
 /**
  * Created by mrashno on 10/4/2017.
  */
 
 public class Notifood {
 
-    // TODO : You should add enough log in project to developers know what happening
     // TODO : Add enough comment to everyone can easily understand what this library doing
-    // TODO : Create test cases
 
     public void setDevKey(String devKey){
         LibPreferences.saveStringObject(Declaration.KEY_DEV_KEY, devKey);
+        Utility.NotifoodLog(String.format(Locale.US, "DevKey is set to %s", devKey), Log.INFO);
     }
 
     public void initialize(Context context){
+        Utility.NotifoodLog("Start to initialize the notifood library", Log.DEBUG);
+
         // Save application package name
         String packageName = context.getPackageName();
-
-        // TODO : This line is for test, Delete it later
-        packageName = "com.example.test";
 
         LibPreferences.saveStringObject(Declaration.KEY_PACKAGE_NAME, packageName);
 
@@ -61,23 +68,31 @@ public class Notifood {
             alarmMgr.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
                     SystemClock.elapsedRealtime() +
                             wakeUpMillis, alarmIntent);
+
+            Utility.NotifoodLog(String.format(Locale.US, "Alarm set for %d millis later", wakeUpMillis), Log.DEBUG);
         }
     }
 
     public void enableNotifood(){
         LibPreferences.saveCustomBoolObject(Declaration.KEY_IS_ENABLED, Declaration.enmCustomBoolCondition.enm_CBC_TRUE);
         ApplicationClass.getInstance().initializeBeaconDetection();
+        Utility.NotifoodLog("Notifood enabled", Log.INFO);
     }
 
     public void disableNotifood(){
         LibPreferences.saveCustomBoolObject(Declaration.KEY_IS_ENABLED, Declaration.enmCustomBoolCondition.enm_CBC_FALSE);
+        Utility.NotifoodLog("Notifood disabled", Log.INFO);
     }
 
     public void enableDebugMode(){
         LibPreferences.saveCustomBoolObject(Declaration.KEY_IS_DEBUG_ENABLED, Declaration.enmCustomBoolCondition.enm_CBC_TRUE);
+        ApplicationClass.setIsDebugMode(Declaration.enmCustomBoolCondition.enm_CBC_TRUE);
+        Utility.NotifoodLog("Notifood enabled", Log.INFO);
     }
 
     public void disableDebugMode(){
         LibPreferences.saveCustomBoolObject(Declaration.KEY_IS_DEBUG_ENABLED, Declaration.enmCustomBoolCondition.enm_CBC_FALSE);
+        ApplicationClass.setIsDebugMode(Declaration.enmCustomBoolCondition.enm_CBC_FALSE);
+        Utility.NotifoodLog("Notifood disabled", Log.INFO);
     }
 }

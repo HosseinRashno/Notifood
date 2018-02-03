@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Locale;
 
 import static com.notifood.notifoodlibrary.utils.Declaration.KEY_DEV_KEY;
 
@@ -51,32 +52,7 @@ public class HandleServiceCall {
 
                 packageName = LibPreferences.getStringPref(Declaration.KEY_PACKAGE_NAME);
                 devKey = LibPreferences.getStringPref(KEY_DEV_KEY);
-                personId = null;
-
-                // region read persn id from file
-                File folder = new File(directoryPath);
-                if(folder.isDirectory()) {
-                    File file = new File(directoryPath, personFileName);
-                    if(file.exists()) {
-                        StringBuilder text = new StringBuilder();
-                        try {
-                            BufferedReader br = new BufferedReader(new FileReader(file));
-                            String line;
-
-                            while ((line = br.readLine()) != null) {
-                                text.append(line);
-                                text.append('\n');
-                            }
-                            br.close();
-
-                            personId = text.toString().replaceAll("[^\\d.]", "");
-                        }
-                        catch (IOException e) {
-                            Utility.NotifoodLog("Can't read person Id, Reason:" + e.toString());
-                        }
-                    }
-                }
-                // endregion
+                personId = Utility.readNumericContentOfFile(directoryPath, personFileName);
 
                 String logPerson = "";
                 if (personId!=null)
@@ -100,6 +76,7 @@ public class HandleServiceCall {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
+                    Utility.NotifoodLog("Recieved result from server.", Log.DEBUG);
                     if (response==null){
                         Utility.NotifoodLog("Service response is null");
                     } else if (response.getErrorCode()!=null){
@@ -123,23 +100,14 @@ public class HandleServiceCall {
                             }
                             // endregion
 
-                            // TODO : These lines is for test, remove them
-                            response.getSetting().setBeaconType(Declaration.enmBeaconType.enm_BT_EDDYSTONE);
-                            response.getSetting().setEddystoneNamespace("0xa9863520a9f21a52a2ff");
-                            response.getSetting().setEddystoneInstanceStart("0x0000000000f0");
-                            response.getSetting().setEddystoneInstanceEnd("0x000000000500");
-//                            response.getSetting().setBeaconType(Declaration.enmBeaconType.enm_BT_IBEACON);
-//                            response.getSetting().setiBeaconUUID("c48c6716-193f-477b-b73a-c550ce582a22");
-//                            response.getSetting().setiBeaconMajor(998);
-//                            response.getSetting().setiBeaconMinorStart(1370);
-//                            response.getSetting().setiBeaconMinorEnd(1410);
-
                             LibPreferences.saveSerializable(Declaration.KEY_SETTINGS, response.getSetting());
+                            Utility.NotifoodLog("Saved setting object", Log.DEBUG);
                         }
 
                         if (response.getRestaurants().size()>0 ){
                             RestaurantTBL restaurantTBL = (RestaurantTBL) new DatabaseFactory().getTable(Declaration.enmTables.enm_T_RESTAURANT);
                             restaurantTBL.insertRestaurantData(response.getRestaurants());
+                            Utility.NotifoodLog(String.format(Locale.US,"Saved %d restaurents in database.", response.getRestaurants().size()), Log.DEBUG);
                         }
                     }
 

@@ -6,6 +6,10 @@ import android.util.Log;
 
 import com.notifood.notifoodlibrary.ApplicationClass;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.Calendar;
 
 import static com.notifood.notifoodlibrary.utils.Declaration.KEY_IS_DEBUG_ENABLED;
@@ -30,7 +34,7 @@ public class Utility {
     }
 
     public static void NotifoodLog(String message, int priority){
-        Declaration.enmCustomBoolCondition isDebugModeEnabled = getCustomBoolPref(KEY_IS_DEBUG_ENABLED);
+        Declaration.enmCustomBoolCondition isDebugModeEnabled = ApplicationClass.getIsDebugMode();
         if (isDebugModeEnabled== Declaration.enmCustomBoolCondition.enm_CBC_DEFAULT || isDebugModeEnabled== Declaration.enmCustomBoolCondition.enm_CBC_TRUE){
             switch (priority){
                 case Log.VERBOSE:
@@ -87,5 +91,36 @@ public class Utility {
     {
         int res = ApplicationClass.getAppContext().checkCallingOrSelfPermission(permission);
         return (res == PackageManager.PERMISSION_GRANTED);
+    }
+
+    public static String readNumericContentOfFile(String directoryPath, String personFileName){
+        String fileContent = null;
+
+        // region read persn id from file
+        File folder = new File(directoryPath);
+        if(folder.isDirectory()) {
+            File file = new File(directoryPath, personFileName);
+            if(file.exists()) {
+                StringBuilder text = new StringBuilder();
+                try {
+                    BufferedReader br = new BufferedReader(new FileReader(file));
+                    String line;
+
+                    while ((line = br.readLine()) != null) {
+                        text.append(line);
+                        text.append('\n');
+                    }
+                    br.close();
+
+                    fileContent = text.toString().replaceAll("[^\\d.]", "");
+                }
+                catch (IOException e) {
+                    Utility.NotifoodLog("Can't read person Id, Reason:" + e.toString());
+                }
+            }
+        }
+        // endregion
+
+        return fileContent;
     }
 }
