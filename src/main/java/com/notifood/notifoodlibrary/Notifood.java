@@ -28,8 +28,6 @@ import static android.content.Context.NOTIFICATION_SERVICE;
 
 public class Notifood {
 
-    // TODO : Add enough comment to everyone can easily understand what this library doing
-
     public void setDevKey(String devKey){
         LibPreferences.saveStringObject(Declaration.KEY_DEV_KEY, devKey);
         Utility.NotifoodLog(String.format(Locale.US, "DevKey is set to %s", devKey), Log.INFO);

@@ -17,4 +17,8 @@
     <string name="restaurant_welcome_message_title">%s در چند قدمی شماست</string>
     <string name="restaurant_welcome_message_body">برای مشاهده منوی %s کلیک کنید!</string>
     <string name="restaurant_welcome_message_subtext">آدرس: %s</string>
+
+    <string name="request_permission_title">درخواست دسترسی</string>
+    <string name="explanation_for_permissions">این اپ قابلیت اسکن محیط اطراف شما و معرفی رستوران‌های اطراف شما را دارد، برای انجام اینکار لطفا دسترسی‌های لازم را به اپ بدهید!</string>
+    <string name="close_btn">بستن</string>
 </resources>
