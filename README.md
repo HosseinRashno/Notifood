@@ -11,7 +11,7 @@
 
 <p align="center">
 
-![Notification](http://s6.uplod.ir/i/00914/zta4dvnhsqz6.png "Notification of the app")
+![Notification](http://s6.uplod.ir/i/00914/mntmfqo7cpsy.png "Notification of the app")
 </p>
 
 <h2 dir="rtl">استفاده از نوتیفود</h2>
@@ -228,12 +228,12 @@ public class MainActivity extends AppCompatActivity {
 
 <h2 dir="rtl"></h2>
 <div dir="rtl">
-<p align="center">
+<center>
 
 تمامی حقوق این لایبرری متعلق به شرکت Notifood به آدرس زیر می‌باشد
 
 [http://notifood.com][1]
-</p>
+</center>
 </div>
 
 
